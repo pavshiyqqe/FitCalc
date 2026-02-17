@@ -20,43 +20,6 @@ A Telegram bot that calculates daily calorie intake and macronutrients for athle
 * Docker
 * Railway (deployment)
 
-## ⚡ Run Locally
-
-### 1. Get a bot token
-
-* Open Telegram and search for `@BotFather`
-* Type `/newbot`
-* Follow the instructions and copy your token
-
-### 2. Create a `.env` file
-
-```bash
-cp .env.example .env
-# Open .env and paste your token
-```
-
-### 3. Install dependencies and run
-
-```bash
-pip install -r requirements.txt
-python bot.py
-```
-
-### 4. Open Telegram, find your bot, and type `/start`
-
----
-
-## 🚀 Deploy on Railway
-
-1. Push your code to GitHub
-2. Go to [https://railway.app](https://railway.app)
-3. Create a new project → Deploy from GitHub
-4. Add an environment variable:
-   `TELEGRAM_BOT_TOKEN=your_token`
-5. Deploy
-
----
-
 ## 📊 Formulas
 
 ### BMR (Mifflin–St Jeor)

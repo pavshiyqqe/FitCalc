@@ -1,7 +1,3 @@
-"""
-Author: Yaniv Yevhen
-"""
-
 import logging
 import asyncio
 import os
@@ -262,9 +258,6 @@ ASK_STEP = {
     GOAL:     ask_goal,
 }
 
-
-# ── Handlers ─────────────────────────────────────────────────
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data.clear()
     context.user_data["current_step"] = GENDER
@@ -279,7 +272,6 @@ async def back(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         await update.message.reply_text("⚠️ You're already at the first step!")
         return await ask_gender(update)
 
-    # Clear the data for the step we're going back to
     field = STEP_NAMES.get(prev)
     if field and field in context.user_data:
         del context.user_data[field]
@@ -499,7 +491,6 @@ async def main():
         await app.stop()
         await app.shutdown()
         print("Bot stopped.")
-
 
 if __name__ == "__main__":
     asyncio.run(main())
