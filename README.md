@@ -1,0 +1,86 @@
+
+---
+
+# 🏋️ FitCalc Bot
+
+A Telegram bot that calculates daily calorie intake and macronutrients for athletes.
+
+## 🚀 Features
+
+* Calculates **BMR** (Basal Metabolic Rate) using the Mifflin–St Jeor formula
+* Calculates **TDEE** based on activity level
+* Adjusts calories for your **goal** (cutting / maintenance / bulking)
+* Calculates daily **protein, fats, and carbohydrates**
+* Estimates daily **water intake** for athletes
+
+## 🛠 Tech Stack
+
+* Python 3.11
+* python-telegram-bot 20.7
+* Docker
+* Railway (deployment)
+
+## ⚡ Run Locally
+
+### 1. Get a bot token
+
+* Open Telegram and search for `@BotFather`
+* Type `/newbot`
+* Follow the instructions and copy your token
+
+### 2. Create a `.env` file
+
+```bash
+cp .env.example .env
+# Open .env and paste your token
+```
+
+### 3. Install dependencies and run
+
+```bash
+pip install -r requirements.txt
+python bot.py
+```
+
+### 4. Open Telegram, find your bot, and type `/start`
+
+---
+
+## 🚀 Deploy on Railway
+
+1. Push your code to GitHub
+2. Go to [https://railway.app](https://railway.app)
+3. Create a new project → Deploy from GitHub
+4. Add an environment variable:
+   `TELEGRAM_BOT_TOKEN=your_token`
+5. Deploy
+
+---
+
+## 📊 Formulas
+
+### BMR (Mifflin–St Jeor)
+
+* Men: `(10 × weight) + (6.25 × height) − (5 × age) + 5`
+* Women: `(10 × weight) + (6.25 × height) − (5 × age) − 161`
+
+### TDEE
+
+`BMR × activity multiplier`
+
+### Macros
+
+* Protein: 30%
+* Fats: 25%
+* Carbohydrates: 45%
+
+---
+
+## 👨‍💻 Author
+
+Yevhen Yaniv
+[https://github.com/pavshiyqqe](https://github.com/pavshiyqqe)
+
+---
+
+Если хочешь, могу сделать версию более “стартап-стайл” или более строгую под GitHub-портфолио.
