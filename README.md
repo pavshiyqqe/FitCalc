@@ -18,7 +18,6 @@ A Telegram bot that calculates daily calorie intake and macronutrients for athle
 * Python 3.11
 * python-telegram-bot 20.7
 * Docker
-* Railway (deployment)
 
 ## 📊 Formulas
 
