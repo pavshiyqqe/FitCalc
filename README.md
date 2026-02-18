@@ -36,14 +36,3 @@ A Telegram bot that calculates daily calorie intake and macronutrients for athle
 * Protein: 30%
 * Fats: 25%
 * Carbohydrates: 45%
-
----
-
-## 👨‍💻 Author
-
-Yevhen Yaniv
-[https://github.com/pavshiyqqe](https://github.com/pavshiyqqe)
-
----
-
-Если хочешь, могу сделать версию более “стартап-стайл” или более строгую под GitHub-портфолио.
