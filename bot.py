@@ -1,6 +1,7 @@
 import logging
 import asyncio
 import os
+import database
 from dotenv import load_dotenv
 from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import (
@@ -260,6 +261,8 @@ ASK_STEP = {
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data.clear()
+    user = update.effective_user
+    database.add_or_update_user(user.id, user.username, user.first_name)
     context.user_data["current_step"] = GENDER
     return await ask_gender(update)
 
@@ -398,6 +401,23 @@ async def goal_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         return GOAL
 
     context.user_data["goal"] = text
+
+    user_data = context.user_data
+    bmr = calculate_bmr(user_data["gender"], user_data["age"], 
+                       user_data["weight"], user_data["height"])
+    tdee = calculate_tdee(bmr, user_data["activity"])
+    target_calories = tdee + GOALS[user_data["goal"]]
+    
+    # Save to DB
+    database.save_calculation(
+        update.effective_user.id,
+        {
+            **user_data,
+            'bmr': bmr,
+            'tdee': tdee,
+            'target_calories': target_calories
+        }
+    )
     result = format_result(context.user_data)
     await update.message.reply_text(
         result,
@@ -425,6 +445,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/start — start a new calculation\n"
         "/back — go to the previous step\n"
         "/help — show this help message\n"
+        "/stats — view bot statistics\n"
         "/cancel — cancel the current calculation\n\n"
         "📊 *What I calculate:*\n"
         "• BMR — Basal Metabolic Rate\n"
@@ -436,6 +457,43 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="Markdown"
     )
 
+async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    stats = database.get_user_stats()
+    
+    top_goals_text = "\n".join([
+        f"  • {goal}: {count} users"
+        for goal, count in stats['top_goals'][:3]
+    ]) if stats['top_goals'] else "  No data yet"
+    
+    top_activities_text = "\n".join([
+        f"  • {activity}: {count} users"
+        for activity, count in stats['top_activities'][:3]
+    ]) if stats['top_activities'] else "  No data yet"
+    
+    message = f"""
+📊 *FitCalc Statistics*
+
+👥 *Users:* {stats['total_users']} registered
+🧮 *Calculations:* {stats['total_calculations']} total
+
+📈 *Averages:*
+├ Age: {stats['avg_age']} years
+├ Weight: {stats['avg_weight']} kg
+└ Height: {stats['avg_height']} cm
+
+🎯 *Popular goals:*
+{top_goals_text}
+
+🏃 *Activity levels:*
+{top_activities_text}
+"""
+    
+    await update.message.reply_text(message, parse_mode="Markdown")
+
+
+
+
 
 async def main():
     token = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -443,6 +501,10 @@ async def main():
         print("❌ Error: TELEGRAM_BOT_TOKEN not found in .env file!")
         print("Create a .env file and add: TELEGRAM_BOT_TOKEN=your_token")
         return
+
+    database.init_db()
+
+
 
     app = Application.builder().token(token).build()
 
@@ -470,6 +532,7 @@ async def main():
 
     app.add_handler(conv_handler)
     app.add_handler(CommandHandler("help", help_command))
+    app.add_handler(CommandHandler("stats", stats_command))
 
     print("✅ FitCalc Bot is running!")
     print("Open Telegram and send /start to your bot")
